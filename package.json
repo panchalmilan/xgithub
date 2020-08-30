@@ -1,0 +1,23 @@
+{
+  "name": "xgithub",
+  "version": "1.0.0",
+  "description": "Github clone",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "supervisor server"
+  },
+  "keywords": [],
+  "author": "Milan Panchal",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "supervisor": "^0.12.0"
+  }
+}
