@@ -3,6 +3,9 @@ const colors = require('colors')
 const express = require('express')
 const morgan = require('morgan')
 
+// importing middlewares
+const errorHandler = require('./middlewares/error')
+
 // importing routers
 const repository = require('./routes/repository')
 const user = require('./routes/user')
@@ -25,6 +28,9 @@ app.use(morgan('dev'))
 // using routers
 app.use('/xgithub', repository)
 app.use('/xgithub', user)
+
+// error handling middleware
+app.use(errorHandler)
 
 // server port
 const PORT = process.env.PORT || 3000

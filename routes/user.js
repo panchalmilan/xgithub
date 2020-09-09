@@ -1,6 +1,7 @@
-const express = require('express')
+const { Router } = require('express')
+const asyncHandler = require('express-async-handler')
 
-const router = express.Router()
+const router = Router()
 
 const {
   getUser,
@@ -9,10 +10,14 @@ const {
   deleteUser,
 } = require('../controllers/user')
 
-router.route('/:username').get(getUser)
+router.route('/:username').get(asyncHandler(getUser))
 
-router.route('/:username/settings').put(updateUser).delete(deleteUser)
+router
+  .route('/:username/settings')
+  .put(asyncHandler(updateUser))
+  .delete(asyncHandler(deleteUser))
 
-router.route('/new').post(createUser)
+// router.route('/new').post(createUser)
+router.route('/new').post(asyncHandler(createUser))
 
 module.exports = router
