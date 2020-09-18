@@ -1,6 +1,7 @@
-const express = require('express')
+const { Router } = require('express')
+const asyncHandler = require('express-async-handler')
 
-const router = express.Router()
+const router = Router()
 
 const {
   getRepositories,
@@ -9,13 +10,13 @@ const {
   deleteRepository,
 } = require('../controllers/repository')
 
-router.route('/repos').get(getRepositories)
+router.route('/repos').get(asyncHandler(getRepositories))
 
-router.route('/:username/new').post(createRepository)
+router.route('/:username/new').post(asyncHandler(createRepository))
 
 router
   .route('/:username/:repo/settings')
-  .put(updateRepository)
-  .delete(deleteRepository)
+  .put(asyncHandler(updateRepository))
+  .delete(asyncHandler(deleteRepository))
 
 module.exports = router
