@@ -8,16 +8,17 @@ const {
   createUser,
   updateUser,
   deleteUser,
+  loginUser,
 } = require('../controllers/user')
 
 router.route('/:username').get(asyncHandler(getUser))
+router.route('/login').post(asyncHandler(loginUser))
 
 router
   .route('/:username/settings')
   .put(asyncHandler(updateUser))
   .delete(asyncHandler(deleteUser))
 
-// router.route('/new').post(createUser)
 router.route('/new').post(asyncHandler(createUser))
 
 module.exports = router
