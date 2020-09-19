@@ -1,5 +1,6 @@
 const colors = require('colors')
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
 
 const UserSchema = new mongoose.Schema({
   username: {
@@ -50,6 +51,11 @@ const UserSchema = new mongoose.Schema({
   },
 })
 
-module.exports = mongoose.model('User', UserSchema)
-
 // Check email uniqueness
+
+// Create Token and send JWT
+UserSchema.methods.createAndSendJWT = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_TOKEN_SECRET)
+}
+
+module.exports = mongoose.model('User', UserSchema)

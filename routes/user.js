@@ -1,5 +1,6 @@
 const { Router } = require('express')
 const asyncHandler = require('express-async-handler')
+const { authToken } = require('../middlewares/verifyToken')
 
 const router = Router()
 
@@ -8,11 +9,9 @@ const {
   createUser,
   updateUser,
   deleteUser,
-  loginUser,
 } = require('../controllers/user')
 
-router.route('/:username').get(asyncHandler(getUser))
-router.route('/login').post(asyncHandler(loginUser))
+router.route('/:username').get(authToken, asyncHandler(getUser))
 
 router
   .route('/:username/settings')

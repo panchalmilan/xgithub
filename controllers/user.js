@@ -6,12 +6,32 @@ const extError = require('../utility/_extError')
 // Get User // No Auth required
 // @route GET /xgithub/:username/
 exports.getUser = async (req, res, next) => {
-  const user = await User.find({ username: req.params.username })
-  if (user.length === 0)
+  const user = await User.findOne({ username: req.params.username })
+
+  if (!user)
     return next(
       new extError(`user: ${req.params.username} not found `, 404, 'user')
     )
-  res.status(200).json({ message: 'User found', data: user })
+
+  if (req.accessUserId === String(user._id))
+    // current user(based on token) wants his(based on params) info
+    return res
+      .status(200)
+      .json({ message: 'User found', view: 'PRIVATE', data: user })
+
+  // current user(based on token) wants someone else (based on params) info
+  const includesArr = [
+    'bio',
+    'starred',
+    'noOfPublicRepositories',
+    'name',
+    'username',
+  ]
+  const publicViewUser = {}
+  includesArr.forEach((prop) => (publicViewUser[prop] = user[prop]))
+  res
+    .status(200)
+    .json({ message: 'User found', view: 'PUBLIC', data: publicViewUser })
 }
 
 // Create new  User
@@ -56,50 +76,4 @@ exports.deleteUser = async (req, res, next) => {
     desc: 'User Deleted',
     message: `${req.params.username} account deleted`,
   })
-}
-
-// Login User // Auth required
-// @route POST /xgithub/:username/login
-// @desc email && password  || username && password
-exports.loginUser = async (req, res, next) => {
-  // username, email flag
-  let credential = false
-  let user = {}
-
-  // login via username
-  if (req.body.username) {
-    // checking if username exists
-    const usernameExists = await User.findOne({ username: req.body.username })
-    if (!usernameExists)
-      return res
-        .status(400)
-        .json({ desc: 'Incorrect email or password // uname' })
-    credential = true
-    user = usernameExists
-  }
-
-  // login via email
-  if (!credential && req.body.email) {
-    // checking if email exists
-    const emailExists = await User.findOne({ email: req.body.email })
-    if (!emailExists)
-      return res
-        .status(400)
-        .json({ desc: 'Incorrect email or password // email' })
-    credential = true
-    user = emailExists
-  }
-
-  // email or username not entered
-  if (!credential) res.send(400).json({ desc: 'Enter email or username' })
-
-  // validating password
-  const isValidPassword = await bcrypt.compare(req.body.password, user.password)
-
-  if (!isValidPassword)
-    return res
-      .status(400)
-      .json({ desc: 'Incorrect email or password // password' })
-
-  res.json({ desc: 'Logged In', data: user })
 }
