@@ -50,6 +50,18 @@ exports.createUser = async (req, res) => {
 // Update User // Auth required
 // @route PUT /xgithub/:username/settings
 exports.updateUser = async (req, res, next) => {
+  const user = await User.findOne({ username: req.params.username })
+
+  // user not found
+  if (!user)
+    return next(
+      new extError(`user: ${req.params.username} not found `, 404, 'user')
+    )
+
+  if (req.accessUserId !== String(user._id))
+    // current user(based on token) wants to update someone else(based on params) info
+    return next(`You are not authorized to update other user info`, 401, 'user')
+
   // cannot change username
   req.body.username = req.params.username
   const updatedUser = await User.findOneAndUpdate(
@@ -57,21 +69,26 @@ exports.updateUser = async (req, res, next) => {
     req.body,
     { new: true }
   )
-  if (!updatedUser)
-    return next(
-      new extError(`user: ${req.params.username} not found `, 404, 'user')
-    )
   res.status(200).json({ desc: 'User updated', updates: updatedUser })
 }
 
 // Delete User // Auth required
 // @route DELETE /xgithub/:username/settings
 exports.deleteUser = async (req, res, next) => {
-  const user = await User.findOneAndDelete({ username: req.params.username })
+  const user = await User.findOne({ username: req.params.username })
+
+  // user not found
   if (!user)
     return next(
       new extError(`user: ${req.params.username} not found `, 404, 'user')
     )
+
+  if (req.accessUserId !== String(user._id))
+    // current user(based on token) wants to delete someone else (based on params)acct
+    return next(`You are not authorized to delete other user acct`, 401, 'user')
+
+  await User.findByIdAndDelete(user._id)
+
   res.status(200).json({
     desc: 'User Deleted',
     message: `${req.params.username} account deleted`,

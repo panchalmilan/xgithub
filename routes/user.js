@@ -15,8 +15,8 @@ router.route('/:username').get(authToken, asyncHandler(getUser))
 
 router
   .route('/:username/settings')
-  .put(asyncHandler(updateUser))
-  .delete(asyncHandler(deleteUser))
+  .put(authToken, asyncHandler(updateUser))
+  .delete(authToken, asyncHandler(deleteUser))
 
 router.route('/new').post(asyncHandler(createUser))
 
