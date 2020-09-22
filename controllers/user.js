@@ -36,15 +36,19 @@ exports.getUser = async (req, res, next) => {
 
 // Create new  User
 // @route POST /xgithub/new/
-exports.createUser = async (req, res) => {
+exports.createUser = async (req, res, next) => {
   // hash password
   const salt = await bcrypt.genSalt(10)
   const hashedPassword = await bcrypt.hash(req.body.password, salt)
   req.body.password = hashedPassword
-
   // Create User
   const user = await User.create(req.body)
-  res.status(201).json({ desc: 'User created', data: user })
+  // Create Token
+  const token = user.createAndSendJWT()
+  res
+    .status(201)
+    .header('auth-token', token)
+    .json({ token, desc: 'User created', data: user })
 }
 
 // Update User // Auth required

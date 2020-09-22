@@ -1,31 +1,42 @@
 const colors = require('colors')
 const Repository = require('../models/Repository')
+const User = require('../models/User')
 
 const extError = require('../utility/_extError')
 
-// Get all Repositories  // No Auth required
-// @route GET /xgithub/repos
-exports.getRepositories = async (req, res) => {
-  const repositories = await Repository.find()
+// Get all Repositories  // Auth required
+// @route GET /xgithub/:username/repos
+exports.getAllRepositories = async (req, res) => {
+  let repositories
+  console.log(req.view)
+  if (req.view === 'private') repositories = await Repository.find()
+  else repositories = await Repository.find({ accessBy: 'public' })
   res.status(200).json({
     repositories,
   })
 }
 
 // Add new repository  // Auth required
+// @route POST xgithub/:username/new
 exports.createRepository = async (req, res, next) => {
-  req.body.username = req.params.username
-  const test = await Repository.checkRepoUniqueness(
-    req.body.name,
-    req.params.username
-  )
+  const { _id: userId, username } = await User.findOne({
+    username: req.params.username,
+  })
+
+  const test = await Repository.checkRepoUniqueness(req.body.name, username)
+  // console.log('controllers', test)
   if (test) {
-    const repository = await Repository.create(req.body)
+    const repository = Repository(req.body)
+    repository.userId = userId
+    repository.username = username
+    repository.contributors.push(username)
+    await repository.save()
+
     res.status(201).json({
+      data: repository,
       desc: 'add new repo',
       auth: 'required',
       username: req.params.username,
-      data: repository,
     })
   } else next(new extError('Repository cannot be same', 400, 'repository'))
 }
