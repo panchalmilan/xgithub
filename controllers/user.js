@@ -1,5 +1,6 @@
 const User = require('../models/User')
 const bcrypt = require('bcryptjs')
+const Repository = require('../models/Repository')
 
 const extError = require('../utility/_extError')
 
@@ -91,6 +92,13 @@ exports.deleteUser = async (req, res, next) => {
     // current user(based on token) wants to delete someone else (based on params)acct
     return next(`You are not authorized to delete other user acct`, 401, 'user')
 
+  // deleting users all repos
+  const repositories = user.repositories
+  repositories.forEach(
+    async (repoId) => await Repository.findByIdAndDelete(repoId)
+  )
+
+  // deleting user
   await User.findByIdAndDelete(user._id)
 
   res.status(200).json({
