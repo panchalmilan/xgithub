@@ -110,7 +110,19 @@ exports.deleteRepository = async (req, res, next) => {
     return next(new extError('No such repository found 1', 400, 'repository'))
   for (let i = 0; i < repositories.length; i++) {
     if (repositories[i].username === uname) {
-      await Repository.findByIdAndDelete(repositories[i]._id)
+      const delRepo = repositories[i]
+
+      const user = await User.findById(delRepo.userId)
+      if (delRepo.accessBy === 'public') {
+        const publicInd = user.publicRepositories.indexOf(delRepo._id)
+        user.publicRepositories.splice(publicInd, 1)
+      }
+      const privateInd = user.repositories.indexOf(delRepo._id)
+      user.repositories.splice(privateInd, 1)
+      user.save()
+
+      await Repository.findByIdAndDelete(delRepo._id)
+
       return res.status(200).json({
         desc: 'Repository Deleted',
         username: uname,
