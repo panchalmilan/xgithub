@@ -76,24 +76,41 @@ exports.createRepository = async (req, res, next) => {
 // @route UPDATE /:username/:repo/settings
 exports.updateRepository = async (req, res, next) => {
   const uname = req.params.username
-  const repo = req.params.repo
-  req.body.name = repo // cannot change repository name
+  req.body.name = req.params.repo // cannot change repository name
 
-  const repositories = await Repository.find({ name: repo })
+  const repositories = await Repository.find({ name: req.params.repo })
   if (repositories.length === 0)
     return next(new extError('No such repository found 1', 400, 'repository'))
   for (let i = 0; i < repositories.length; i++) {
     if (repositories[i].username === uname) {
-      const newRepo = await Repository.findByIdAndUpdate(
-        repositories[i]._id,
+      const repo = repositories[i]
+      const oldAccess = repo.accessBy
+      const updatedRepo = await Repository.findByIdAndUpdate(
+        repo._id,
         req.body,
         { new: true }
       )
+      const isAccessChanged = updatedRepo.accessBy !== oldAccess ? true : false
+      if (isAccessChanged) {
+        const user = await User.findById(repo.userId)
+        // private -> public
+        if (oldAccess === 'private') {
+          user.noOfPublicRepositories++
+          user.publicRepositories.push(repo._id)
+        }
+        // public -> private
+        else {
+          user.noOfPublicRepositories--
+          const repoInd = await user.publicRepositories.indexOf(repo._id)
+          user.publicRepositories.splice(repoInd, 1)
+        }
+        await user.save()
+      }
       return res.status(200).json({
         desc: 'Repository Updated',
         username: uname,
         repository: repo,
-        updates: newRepo,
+        updates: updatedRepo,
       })
     }
   }
