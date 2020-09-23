@@ -1,6 +1,10 @@
 const errorHandler = (err, req, res, next) => {
+  console.log(`${err.message}`.red)
   if (err.code === 11000) {
     err.message = `${err.keyValue.username} already exists!`
+  }
+
+  if (err.code === 500) {
   }
 
   if (err.code === 404) {
