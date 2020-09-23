@@ -19,18 +19,46 @@ exports.getAllRepositories = async (req, res) => {
 // Add new repository  // Auth required
 // @route POST xgithub/:username/new
 exports.createRepository = async (req, res, next) => {
-  const { _id: userId, username } = await User.findOne({
+  const user = await User.findOne({
     username: req.params.username,
   })
 
-  const test = await Repository.checkRepoUniqueness(req.body.name, username)
-  // console.log('controllers', test)
-  if (test) {
+  if (!user)
+    return next(
+      new extError(`user: ${req.params.username} not found `, 404, 'user')
+    )
+
+  if (req.accessUserId !== String(user._id))
+    return next(
+      new extError(
+        `You are not authorized to create repo from this acct `,
+        401,
+        'repository'
+      )
+    )
+
+  const isUnique = await Repository.checkRepoUniqueness(
+    req.body.name,
+    user.username
+  )
+
+  if (isUnique) {
     const repository = Repository(req.body)
-    repository.userId = userId
-    repository.username = username
-    repository.contributors.push(username)
+    repository.userId = user._id
+    repository.username = user.username
+    repository.contributors.push(user.username)
     await repository.save()
+
+    const isPrivate = req.body.accessBy === 'private' ? true : false
+    if (!isPrivate) {
+      // public
+      user.publicRepositories.push(repository)
+      user.noOfPublicRepositories++
+    }
+    // private
+    user.repositories.push(repository)
+    user.noOfRepositories++
+    await user.save()
 
     res.status(201).json({
       data: repository,

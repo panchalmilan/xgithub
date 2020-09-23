@@ -17,7 +17,7 @@ exports.getUser = async (req, res, next) => {
     // current user(based on token) wants his(based on params) info
     return res
       .status(200)
-      .json({ message: 'User found', view: 'PRIVATE', data: user })
+      .json({ message: 'User found', view: 'private', data: user })
 
   // current user(based on token) wants someone else (based on params) info
   const includesArr = [

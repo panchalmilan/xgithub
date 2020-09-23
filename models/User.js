@@ -49,6 +49,14 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  publicRepositories: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'User',
+  },
+  repositories: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'User',
+  },
 })
 
 // Check email uniqueness

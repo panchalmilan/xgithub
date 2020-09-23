@@ -20,7 +20,7 @@ router.route('/:username/new').post(authToken, asyncHandler(createRepository))
 
 router
   .route('/:username/:repo/settings')
-  .put(asyncHandler(updateRepository))
-  .delete(asyncHandler(deleteRepository))
+  .put(authToken, asyncHandler(updateRepository))
+  .delete(authToken, asyncHandler(deleteRepository))
 
 module.exports = router
