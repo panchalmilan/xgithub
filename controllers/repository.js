@@ -1,4 +1,5 @@
 const colors = require('colors')
+const { Router } = require('express')
 const Repository = require('../models/Repository')
 const User = require('../models/User')
 
@@ -148,4 +149,20 @@ exports.deleteRepository = async (req, res, next) => {
     }
   }
   next(new extError('No such repository found 1', 400, 'repository'))
+}
+
+// Upload files to repository  // Auth required
+// @route POST /:username/:repo/upload
+exports.uploadToRepository = async (req, res, next) => {
+  try {
+    return res.status(201).json({
+      desc: 'File(s) uploaded successfully',
+      username: req.params.username,
+      repository: req.params.repo
+    })
+  }
+  catch (err) {
+    console.log(err)
+    next(new extError('Upload failed', 500, 'repository'))
+  }
 }

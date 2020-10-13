@@ -26,6 +26,9 @@ app.use(express.json())
 // Logging requests
 app.use(morgan('dev'))
 
+// Making uploads folder publically available
+app.use(express.static('uploads'))
+
 // using routers
 app.use('/xgithub', auth)
 app.use('/xgithub', repository)

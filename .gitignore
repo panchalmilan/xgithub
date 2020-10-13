@@ -2,3 +2,4 @@ node_modules/
 views/
 package-lock.json
 TASKS.md
+uploads/*
