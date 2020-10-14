@@ -1,21 +1,26 @@
-const express = require('express')
+const { Router } = require('express')
+const asyncHandler = require('express-async-handler')
+const { authToken } = require('../middlewares/verifyToken')
+const { checkView } = require('../middlewares/checkRepoView')
 
-const router = express.Router()
+const router = Router()
 
 const {
-  getRepositories,
+  getAllRepositories,
   createRepository,
   updateRepository,
   deleteRepository,
 } = require('../controllers/repository')
 
-router.route('/repos').get(getRepositories)
+router
+  .route('/:username/repos')
+  .get(checkView, asyncHandler(getAllRepositories))
 
-router.route('/:username/new').post(createRepository)
+router.route('/:username/new').post(authToken, asyncHandler(createRepository))
 
 router
   .route('/:username/:repo/settings')
-  .put(updateRepository)
-  .delete(deleteRepository)
+  .put(authToken, asyncHandler(updateRepository))
+  .delete(authToken, asyncHandler(deleteRepository))
 
 module.exports = router

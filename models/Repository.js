@@ -6,6 +6,16 @@ const RepositorySchema = new mongoose.Schema({
     required: true,
     maxlength: [30, 'Name cannot be more than 30 chars'],
     trim: true,
+    unique: true,
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  username: {
+    type: String,
+    required: true,
   },
   createdAt: {
     type: String,
@@ -24,15 +34,6 @@ const RepositorySchema = new mongoose.Schema({
     trim: true,
     maxlength: [200, 'Description cannot be more than 200 characters'],
   },
-  username: {
-    type: String,
-    trim: true,
-    maxlength: 45,
-  },
-  slug: {
-    type: String,
-    unique: true,
-  },
   contributors: {
     type: [String],
   },
@@ -50,15 +51,11 @@ const RepositorySchema = new mongoose.Schema({
   },
 })
 
-RepositorySchema.pre('validate', function (next) {
-  this.slug = `${this.username}_${this.name.split(' ').join('-')}`
-  this.contributors.push(this.username)
-  next()
-})
-
 RepositorySchema.statics.checkRepoUniqueness = async function (repo, uname) {
   try {
     const repositories = await this.find({ name: repo })
+    console.log(uname)
+    console.log(repo)
     if (repositories.length === 0) return true
     for (let i = 0; i < repositories.length; i++) {
       if (repositories[i].username === uname) return false
