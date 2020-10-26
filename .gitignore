@@ -3,3 +3,4 @@ views/
 package-lock.json
 TASKS.md
 uploads/*
+docs.txt

@@ -11,6 +11,18 @@ const {
   deleteUser,
 } = require('../controllers/user')
 
+/**
+ * @swagger
+ * /xgithub/username:
+ *  get:
+ *    summary: Get All books sum
+ *    description: Get All books desc
+ *    responses:
+ *      200:
+ *        description: User info
+ *        content:
+ *          application/json
+ */
 router.route('/:username').get(authToken, asyncHandler(getUser))
 
 router

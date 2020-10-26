@@ -1,14 +1,12 @@
 const User = require('../models/User')
 const bcrypt = require('bcryptjs')
 const Repository = require('../models/Repository')
-
 const extError = require('../utility/_extError')
 
 // Get User // No Auth required
 // @route GET /xgithub/:username/
 exports.getUser = async (req, res, next) => {
   const user = req.user
-
   // current user(based on token) wants someone else (based on params) info
   const includesArr = [
     'bio',
@@ -21,7 +19,7 @@ exports.getUser = async (req, res, next) => {
   includesArr.forEach((prop) => (publicViewUser[prop] = user[prop]))
   res
     .status(200)
-    .json({ message: 'User found', view: 'PUBLIC', data: publicViewUser })
+    .json({ message: 'User found', view: 'public', data: publicViewUser })
 }
 
 // Create new  User
