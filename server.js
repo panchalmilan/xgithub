@@ -27,9 +27,8 @@ colors.disable()
 // development mode
 if (process.env.NODE_ENV === 'development') {
   colors.enable()
-  console.log('\nDevelopment Mode'.underline.yellow.bold)
-  // Logging requests
-  app.use(morgan('dev'))
+  console.log('\nDevelopment Mode'.underline.yellow)
+  app.use(morgan('dev')) // Logging requests
 }
 
 // body parser

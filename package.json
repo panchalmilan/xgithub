@@ -4,7 +4,7 @@
   "description": "Github clone",
   "main": "server.js",
   "scripts": {
-    "start": "env NODE_ENV=production node server %NODE_ENV%",
+    "start": "env NODE_ENV=production node server",
     "dev": "supervisor server"
   },
   "keywords": [],
@@ -22,6 +22,7 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
+    "debug": "^4.2.0",
     "morgan": "^1.10.0",
     "supervisor": "^0.12.0",
     "swagger-jsdoc": "^4.3.1",
