@@ -6,7 +6,19 @@ const extError = require('../utility/_extError')
 // Get User // No Auth required
 // @route GET /xgithub/:username/
 exports.getUser = async (req, res, next) => {
-  const user = req.user
+  const user = await User.findOne({ username: req.params.username })
+
+  if (!user)
+    return next(
+      new extError(`user: ${req.params.username} not found `, 404, 'user')
+    )
+
+  if (req.accessUserId === String(user._id))
+    // current user(based on token) wants his(based on params) info
+    return res
+      .status(200)
+      .json({ message: 'User found', view: 'private', data: user })
+
   // current user(based on token) wants someone else (based on params) info
   const includesArr = [
     'bio',
@@ -19,7 +31,7 @@ exports.getUser = async (req, res, next) => {
   includesArr.forEach((prop) => (publicViewUser[prop] = user[prop]))
   res
     .status(200)
-    .json({ message: 'User found', view: 'public', data: publicViewUser })
+    .json({ message: 'User found', view: 'PUBLIC', data: publicViewUser })
 }
 
 // Create new  User
@@ -42,7 +54,17 @@ exports.createUser = async (req, res, next) => {
 // Update User // Auth required
 // @route PUT /xgithub/:username/settings
 exports.updateUser = async (req, res, next) => {
-  const user = req.user
+  const user = await User.findOne({ username: req.params.username })
+
+  // user not found
+  if (!user)
+    return next(
+      new extError(`user: ${req.params.username} not found `, 404, 'user')
+    )
+
+  if (req.accessUserId !== String(user._id))
+    // current user(based on token) wants to update someone else(based on params) info
+    return next(`You are not authorized to update other user info`, 401, 'user')
 
   // cannot change username
   req.body.username = req.params.username
@@ -57,7 +79,17 @@ exports.updateUser = async (req, res, next) => {
 // Delete User // Auth required
 // @route DELETE /xgithub/:username/settings
 exports.deleteUser = async (req, res, next) => {
-  const user = req.user
+  const user = await User.findOne({ username: req.params.username })
+
+  // user not found
+  if (!user)
+    return next(
+      new extError(`user: ${req.params.username} not found `, 404, 'user')
+    )
+
+  if (req.accessUserId !== String(user._id))
+    // current user(based on token) wants to delete someone else (based on params)acct
+    return next(`You are not authorized to delete other user acct`, 401, 'user')
 
   // deleting users all repos
   const repositories = user.repositories

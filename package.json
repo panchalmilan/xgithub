@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "env NODE_ENV=production node server",
-    "dev": "supervisor server"
+    "dev": "env NODE_ENV=development supervisor server",
+    "utest": "env NODE_ENV=test mocha tests/unit/*.test.js --watch",
+    "itest": "env NODE_ENV=test mocha tests/integration/*.test.js"
   },
   "keywords": [],
   "author": "Milan Panchal",
@@ -22,10 +24,9 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
-    "debug": "^4.2.0",
-    "morgan": "^1.10.0",
-    "supervisor": "^0.12.0",
-    "swagger-jsdoc": "^4.3.1",
-    "swagger-ui-express": "^4.1.4"
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^8.2.0",
+    "supervisor": "^0.12.0"
   }
 }

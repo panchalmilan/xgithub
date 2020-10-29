@@ -10,14 +10,24 @@ require('dotenv').config({ path: './config/config.env' })
 // importing middlewares
 const errorHandler = require('./middlewares/error')
 
+// importing middlewares
+const errorHandler = require('./middlewares/error')
+
 // importing routers
 const repository = require('./routes/repository')
 const user = require('./routes/user')
 const auth = require('./routes/auth')
 
+// Loading env variables
+require('dotenv').config({ path: './config/common.env' })
+require('dotenv').config({ path: require('./utility/configPath')() })
+
 // Database Connection
-const connectDB = require('./config/db')
-connectDB()
+if (process.env.NODE_ENV !== 'test') {
+  const connectDB = require('./config/db')
+  connectDB()
+  console.log(`${process.env.DB_PATH}`.cyan.underline)
+}
 
 const app = express()
 
@@ -34,15 +44,12 @@ if (process.env.NODE_ENV === 'development') {
 // body parser
 app.use(express.json())
 
-// Documention
-app.use(
-  '/xgithub/api-docs',
-  swaggerUI.serve,
-  swaggerUI.setup(require('./config/docs').swaggerDocs)
-)
+// Logging requests
+if (app.get('env') === 'development') {
+  app.use(morgan('dev'))
+}
 
-// Making uploads folder publically available
-app.use(express.static('uploads'))
+app.get('/', (req, res) => res.status(200).send('Hello World'))
 
 // using routers
 app.use('/xgithub', auth)
@@ -55,4 +62,9 @@ app.use(errorHandler)
 // server port
 const PORT = process.env.PORT || 3000
 
-app.listen(PORT, console.log(`Server running on port ${PORT} `.bgGreen.black))
+const server = app.listen(
+  PORT,
+  console.log(`\n Server running on port ${PORT} `.bgGreen.black)
+)
+
+module.exports = server
