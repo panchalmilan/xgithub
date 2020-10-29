@@ -12,11 +12,14 @@ const user = require('./routes/user')
 const auth = require('./routes/auth')
 
 // Loading env variables
-require('dotenv').config({ path: './config/config.env' })
+require('dotenv').config({ path: require('./utility/configPath')() })
 
 // Database Connection
-const connectDB = require('./config/db')
-connectDB()
+if (process.env.NODE_ENV !== 'test') {
+  const connectDB = require('./config/db')
+  connectDB()
+  console.log(`${process.env.DB_PATH}`.cyan.underline)
+}
 
 const app = express()
 
@@ -24,7 +27,11 @@ const app = express()
 app.use(express.json())
 
 // Logging requests
-app.use(morgan('dev'))
+if (app.get('env') === 'development') {
+  app.use(morgan('dev'))
+}
+
+app.get('/', (req, res) => res.status(200).send({ test: 'Hello world' }))
 
 // using routers
 app.use('/xgithub', auth)
@@ -37,7 +44,9 @@ app.use(errorHandler)
 // server port
 const PORT = process.env.PORT || 3000
 
-app.listen(
+const server = app.listen(
   PORT,
   console.log(`\n Server running on port ${PORT} `.bgGreen.black)
 )
+
+module.exports = server
