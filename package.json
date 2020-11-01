@@ -6,7 +6,7 @@
   "scripts": {
     "start": "env NODE_ENV=production node server",
     "dev": "env NODE_ENV=development supervisor server",
-    "test":"env NODE_ENV=test mocha tests/**/*.test.js",
+    "test":"env NODE_ENV=test mocha tests/**/*.test.js --timeout 50000 --exit",
     "utest": "env NODE_ENV=test mocha tests/unit/*.test.js",
     "itest": "env NODE_ENV=test mocha tests/integration/*.test.js",
     "seed": "env NODE_ENV=development node seeds/seeding.js"
