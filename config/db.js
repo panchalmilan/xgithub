@@ -11,7 +11,8 @@ const options = {
 // database connection
 const connectDB = async () => {
   const conn = await mongoose.connect(process.env.DB_PATH, options)
-  console.log(`\n MongoDB connected: ${conn.connection.host}`.bgYellow.black)
+  console.log('')
+  console.log(`MongoDB connected: ${conn.connection.host}`.yellow.underline)
   console.log(`${process.env.DB_PATH}`.yellow.underline)
   return conn
 }

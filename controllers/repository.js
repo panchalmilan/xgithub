@@ -9,9 +9,13 @@ const extError = require('../utility/_extError')
 // @route GET /xgithub/:username/repos
 exports.getAllRepositories = async (req, res) => {
   let repositories
-  console.log(req.view)
-  if (req.view === 'private') repositories = await Repository.find()
-  else repositories = await Repository.find({ accessBy: 'public' })
+  if (req.view === 'private')
+    repositories = await Repository.find().populate('userId')
+  else
+    repositories = await Repository.find({ accessBy: 'public' }).populate(
+      'userId',
+      'name username'
+    )
   res.status(200).json({
     repositories,
   })
@@ -69,9 +73,6 @@ exports.createRepository = async (req, res, next) => {
     })
   } else next(new extError('Repository cannot be same', 400, 'repository'))
 }
-
-// PENDING
-// getSettingsPage
 
 // Update repository  // Auth required
 // @route UPDATE /:username/:repo/settings
@@ -158,10 +159,9 @@ exports.uploadToRepository = async (req, res, next) => {
     return res.status(201).json({
       desc: 'File(s) uploaded successfully',
       username: req.params.username,
-      repository: req.params.repo
+      repository: req.params.repo,
     })
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err)
     next(new extError('Upload failed', 500, 'repository'))
   }

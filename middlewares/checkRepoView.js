@@ -1,6 +1,10 @@
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 
+/**
+ * if user has no token, he wont be able to get all info:: view='public'
+ * if user has valid token, he will get all info:: view='private'
+ */
 exports.checkView = async (req, res, next) => {
   try {
     req.view = 'public'

@@ -6,8 +6,10 @@
   "scripts": {
     "start": "env NODE_ENV=production node server",
     "dev": "env NODE_ENV=development supervisor server",
-    "utest": "env NODE_ENV=test mocha tests/unit/*.test.js --watch",
-    "itest": "env NODE_ENV=test mocha tests/integration/*.test.js"
+    "test":"env NODE_ENV=test mocha tests/**/*.test.js",
+    "utest": "env NODE_ENV=test mocha tests/unit/*.test.js",
+    "itest": "env NODE_ENV=test mocha tests/integration/*.test.js",
+    "seed": "env NODE_ENV=development node seeds/seeding.js"
   },
   "keywords": [],
   "author": "Milan Panchal",
@@ -21,12 +23,15 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.0",
     "multer": "^1.4.2",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "swagger-jsdoc": "^5.0.0",
+    "swagger-ui-express": "^4.1.4"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "mocha": "^8.2.0",
+    "morgan": "^1.10.0",
     "supervisor": "^0.12.0"
   }
 }

@@ -11,7 +11,6 @@ const RepositorySchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
   },
   username: {
     type: String,
@@ -54,8 +53,6 @@ const RepositorySchema = new mongoose.Schema({
 RepositorySchema.statics.checkRepoUniqueness = async function (repo, uname) {
   try {
     const repositories = await this.find({ name: repo })
-    console.log(uname)
-    console.log(repo)
     if (repositories.length === 0) return true
     for (let i = 0; i < repositories.length; i++) {
       if (repositories[i].username === uname) return false

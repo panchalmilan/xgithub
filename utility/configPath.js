@@ -4,6 +4,7 @@ const config_path = () => {
   else if (process.env.NODE_ENV === 'production') path += '/production'
   else path += '/test'
   path += '.env'
+  console.log(path)
   return path
 }
 

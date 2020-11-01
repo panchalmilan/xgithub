@@ -10,9 +10,6 @@ require('dotenv').config({ path: './config/config.env' })
 // importing middlewares
 const errorHandler = require('./middlewares/error')
 
-// importing middlewares
-const errorHandler = require('./middlewares/error')
-
 // importing routers
 const repository = require('./routes/repository')
 const user = require('./routes/user')
@@ -26,17 +23,15 @@ require('dotenv').config({ path: require('./utility/configPath')() })
 if (process.env.NODE_ENV !== 'test') {
   const connectDB = require('./config/db')
   connectDB()
-  console.log(`${process.env.DB_PATH}`.cyan.underline)
 }
 
 const app = express()
 
 // production mode
-colors.disable()
+if (process.env.NODE_ENV === 'production') colors.disable()
 
 // development mode
 if (process.env.NODE_ENV === 'development') {
-  colors.enable()
   console.log('\nDevelopment Mode'.underline.yellow)
   app.use(morgan('dev')) // Logging requests
 }

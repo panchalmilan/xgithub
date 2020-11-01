@@ -34,7 +34,6 @@ const UserSchema = new mongoose.Schema({
   bio: {
     type: String,
     default: 'Hello World',
-    maxlength: [250, 'Bio cant be more than 250 chars'],
   },
   // Photo Upload
   starred: {
