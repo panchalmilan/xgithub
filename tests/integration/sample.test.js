@@ -41,22 +41,21 @@ describe(' User '.bgCyan.black, () => {
    * Create User
    */
   describe('POST /new', () => {
-    it('should return user data', async () => {
-      try {
-        const res = await chai
-          .request(server)
-          .post('/xgithub/new')
-          .send(user_data)
-
-        const { data } = res.body
-        expect(res.status).to.be.equal(201)
-        expect(data.name).to.be.equal('John Wick')
-        expect(data.username).to.be.equal('johnwick')
-        expect(data.email).to.be.equal('jw@gmail.com')
-        expect(data.password).to.not.be.equal('pass1234')
-      } catch (err) {
-        console.error(err)
-      }
+    it('should return user data', (done) => {
+      chai
+        .request(server)
+        .post('/xgithub/new')
+        .send(user_data)
+        .end((err, res) => {
+          if (err) return console.error(err)
+          const { data } = res.body
+          expect(res.status).to.be.equal(201)
+          expect(data.name).to.be.equal('John Wick')
+          expect(data.username).to.be.equal('johnwick')
+          expect(data.email).to.be.equal('jw@gmail.com')
+          expect(data.password).to.not.be.equal('pass1234')
+          done()
+        })
     })
   })
 
