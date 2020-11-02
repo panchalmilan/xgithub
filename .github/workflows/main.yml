@@ -1,0 +1,29 @@
+name: Node.js CI
+
+on:
+  push:
+    branches:
+      - master
+      - development
+  pull_request:
+    branches: [development]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1.4.2
+        with:
+          node-version: 12
+      - name: Install dependencies
+        run: npm install
+      - name: Test
+        run: echo $STRING_SECRET
+        env:
+          STRING_SECRET: ${{ secrets.TEST_SECRET }}
+      - name: test2
+        run: DB_NAME=$SECRET_DB_NAME DB_PASSWORD=$SECRET_DB_PASSWORD npm test
+        env:
+          SECRET_DB_NAME: ${{ secrets.DB_NAME }}
+          SECRET_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}

@@ -28,3 +28,10 @@ describe('user.createAndSendJWT', () => {
     expect(decoded_user).to.have.property('iat')
   })
 })
+
+describe('logging test', () => {
+  it('should return nothing', () => {
+    console.log(process.env.JWT_TOKEN_SECRET)
+    expect(true).to.be.true
+  })
+})
