@@ -9,7 +9,7 @@
     "test":"env NODE_ENV=test mocha tests/**/*.test.js --timeout 50000 --exit",
     "dev2": "env NODE_ENV=development DB_SERVICE=cloud supervisor server",
     "utest": "env NODE_ENV=test mocha tests/unit/*.test.js",
-    "itest": "env NODE_ENV=test mocha tests/integration/*.test.js",
+    "itest": "env NODE_ENV=test mocha tests/integration/sample.test.js --timeout 50000 --exit",
     "seed": "env NODE_ENV=development node seeds/seeding.js"
   },
   "keywords": [],

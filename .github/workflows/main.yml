@@ -22,8 +22,8 @@ jobs:
         run: echo $STRING_SECRET
         env:
           STRING_SECRET: ${{ secrets.TEST_SECRET }}
-      - name: test2
-        run: DB_NAME=$SECRET_DB_NAME DB_PASSWORD=$SECRET_DB_PASSWORD npm test
+      - name: only integration test
+        run: DB_NAME=$SECRET_DB_NAME DB_PASSWORD=$SECRET_DB_PASSWORD npm run itest
         env:
           SECRET_DB_NAME: ${{ secrets.DB_NAME }}
           SECRET_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
