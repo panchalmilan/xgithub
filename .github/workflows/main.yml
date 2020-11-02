@@ -16,14 +16,13 @@ jobs:
       - uses: actions/setup-node@v1.4.2
         with:
           node-version: 12
+
       - name: Install dependencies
         run: npm install
-      - name: Test
-        run: echo $STRING_SECRET
-        env:
-          STRING_SECRET: ${{ secrets.TEST_SECRET }}
-      - name: only integration test
+
+      - name: sample integration test
         run: DB_NAME=$SECRET_DB_NAME DB_PASSWORD=$SECRET_DB_PASSWORD npm run itest
         env:
           SECRET_DB_NAME: ${{ secrets.DB_NAME }}
           SECRET_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          JWT_TOKEN_SECRET: test_jwtsecret
