@@ -4,3 +4,4 @@ package-lock.json
 TASKS.md
 uploads/*
 docs.txt
+config/secrets.env
