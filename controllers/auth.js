@@ -16,7 +16,7 @@ exports.loginUser = async (req, res, next) => {
     if (!usernameExists)
       return res
         .status(400)
-        .json({ desc: 'Incorrect email or password // uname' })
+        .json({ desc: 'Incorrect username or password // uname' })
     credential = true
     user = usernameExists
   }
