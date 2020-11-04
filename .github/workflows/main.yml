@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [8.x, 10.x, 12.x, 13.x]
+        node-version: [10.x, 12.x, 13.x]
         mongodb-version: [4.0, 4.2]
 
     steps:
@@ -32,6 +32,6 @@ jobs:
 
       - run: npm install
 
-      - run: npm run itest
+      - run: npm test
         env:
           CI: true
