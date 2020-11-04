@@ -11,18 +11,27 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x, 13.x]
+        mongodb-version: [4.0, 4.2]
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1.4.2
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: ${{ matrix.node-version }}
 
-      - name: Install dependencies
-        run: npm install
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.3.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
 
-      - name: sample integration test
-        run: DB_NAME=$SECRET_DB_NAME DB_PASSWORD=$SECRET_DB_PASSWORD npm run itest
+      - run: npm install
+
+      - run: npm run itest
         env:
-          SECRET_DB_NAME: ${{ secrets.DB_NAME }}
-          SECRET_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          JWT_TOKEN_SECRET: test_jwtsecret
+          CI: true
