@@ -30,9 +30,13 @@ const user_data = {
   bio: 'hello world',
 }
 
-describe(' User '.bgCyan.black, () => {
-  beforeEach((done) => {
-    await connectDB()
+describe(' User '.bgCyan.black, async() => {
+  beforeEach(() => {
+    try {
+      await connectDB()
+    } catch (err) {
+      return console.error('Database connection error')      
+    }
   })
   afterEach(async () => {
     await User.deleteMany({})
