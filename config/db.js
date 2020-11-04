@@ -9,7 +9,7 @@ const options = {
 }
 
 let connectionString
-if (process.env.DB_SERVICE === 'cloud') {
+if (process.env.NODE_ENV === 'production') {
   require('dotenv').config({ path: './config/secrets.env' })
   connectionString = `mongodb+srv://panchalmilan:${process.env.DB_PASSWORD}@cluster0.grw2b.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
 } else {

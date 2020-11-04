@@ -44,7 +44,7 @@ if (app.get('env') === 'development') {
   app.use(morgan('dev'))
 }
 
-app.get('/', (req, res) => res.status(200).send('Hello World'))
+app.get('/hello', (req, res) => res.status(200).send('Hello World'))
 
 // using routers
 app.use('/xgithub', auth)
