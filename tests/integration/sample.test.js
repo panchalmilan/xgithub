@@ -30,12 +30,12 @@ const user_data = {
   bio: 'hello world',
 }
 
-describe(' User '.bgCyan.black, async() => {
-  beforeEach(() => {
+describe(' User '.bgCyan.black, async () => {
+  beforeEach(async () => {
     try {
       await connectDB()
     } catch (err) {
-      return console.error('Database connection error')      
+      return console.error('Database connection error')
     }
   })
   afterEach(async () => {
